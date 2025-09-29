@@ -69,4 +69,24 @@ print(X_train.describe())
 # 학습용 데이터 상자 그림
 sns.set(font_scale=2)
 sns.boxplot(data=X_train, palette="colorblind")
-plt.show()
+# plt.show()
+
+    ####### 인공 신경망 구현 #######
+
+
+# 파이토치 DNN을 Sequential 모델로 구현
+model = nn.Sequential(
+    nn.Linear(INPUT_DIM, MY_HIDDEN),
+    nn.Tanh(),
+    nn.Linear(MY_HIDDEN, MY_HIDDEN),
+    nn.Tanh(),
+    nn.Linear(MY_HIDDEN, 1),
+    nn.Sigmoid()
+)
+
+print('\nDNN 요약')
+print(model)
+
+# 총 파라미터 수 계산
+total = sum(p.numel() for p in model.parameters())
+print('총 파라미터 수: {:,}'.format(total))
