@@ -99,3 +99,55 @@ criterion= nn.MSELoss()
 # pandas dataframe에서 pytorch 텐서로
 X_train = torch.tensor(X_train.values).float()
 Y_train = torch.tensor(Y_train.values).float()
+
+# DNN 학습
+begin = time()
+print('\nDNN 학습 데이터')
+
+for epoch in range(MY_EPOCH):
+    output = model(X_train)
+    # print(X_train.shape)
+    # print(output.shape)
+
+    # 출력값 차원을 (212, 1) 에서 (212,) 로 조정
+    output = torch.squeeze(output)
+
+    # 손실값 계산
+    loss = criterion(output, Y_train)
+
+    # 손실값 출력
+    if(epoch % 10 ==0):
+        print('에포크: {:3}'.format(epoch),
+              '손실: {:.3f}'.format(loss.item()))
+
+    # 역전파 알고리즘으로 가중치 보정
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+end = time()
+
+print('최종 학습 시간: {:.1f}초'.format(end - begin))
+
+########### 인공 신경망 평가 ################
+
+# 평가용 데이터 전환
+# pandas dataframe에서 pytorch 텐서로
+X_test = torch.tensor(X_test.values).float()
+
+# DNN으로 추측, 가중치 관련 계싼 불필요
+with torch.no_grad():
+    pred = model(X_test)
+
+    # 실행 결과 확인
+    print(pred.flatten())
+
+# 추측 결과 tensor를 numpy로 전환
+pred = pred.numpy()
+
+# 확률을 이진수로 전환 후, F1 점수 계산
+pred = (pred > 0.5)
+print('추측값:',pred.flatten())
+print('정답:',Y_train.flatten())
+
+f1 = f1_score(Y_test, pred)
+print("\n최종 정확도 (F1 점수): {:.3f}".format(f1))
