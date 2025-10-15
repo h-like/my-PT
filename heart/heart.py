@@ -21,7 +21,7 @@ torch.manual_seed(111)
 import numpy as np
 np.random.seed(111)
 
-# 데이터 파일 읽기
+# 데이터 파일 ?읽기
 # 결과는 pandas의 데이터 프레임 형식
 raw = pd.read_csv('heart.csv')
 
@@ -90,3 +90,12 @@ print(model)
 # 총 파라미터 수 계산
 total = sum(p.numel() for p in model.parameters())
 print('총 파라미터 수: {:,}'.format(total))
+
+# 최적화 함수와 손실 함수 지정
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+criterion= nn.MSELoss()
+
+# 학습용 데이터 전환
+# pandas dataframe에서 pytorch 텐서로
+X_train = torch.tensor(X_train.values).float()
+Y_train = torch.tensor(Y_train.values).float()
